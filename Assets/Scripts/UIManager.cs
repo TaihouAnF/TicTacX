@@ -4,17 +4,15 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
+    [Header("Reference")]
+    [SerializeField] private GameObject circleChess;
+    [SerializeField] private GameObject crossChess;
+    private List<GameObject> chesses = new List<GameObject>();
     public GameObject resetButton;
     // Start is called before the first frame update
     void Start()
     {
         ResetButtonDisplay(false);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     void ResetButtonDisplay(bool on)

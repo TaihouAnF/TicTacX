@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
 
     // 棋盘
     private Vector2[,] buttonPos = new Vector2[3, 3];   // 棋子位置
-    private int[,] records = new int[3, 3];             // 记录，空位为0，1和-1对应不同玩家
+    private int[] chessRecord = new int[9];                 // 记录，空位为0，1和-1对应不同玩家, i = x * 3 + y
     private int cnt;                                    // 棋盘棋子数量统计
 
     // 玩家设置
@@ -51,11 +51,11 @@ public class GameManager : MonoBehaviour
 
     private void OnPlay(int x, int y)
     {
-        if ((vsAI && currPlayer != player1) || records[x, y] != 0 || end) return;
+        if ((vsAI && currPlayer != player1) || chessRecord[x * 3 + y] != 0 || end) return;
         Debug.Log("now, " + currPlayer +  " is playing\n");
         int tmp = currPlayer;   // Use for the purpose of two players
         TurnChange(-currPlayer);
-        records[x, y] = tmp;
+        chessRecord[x * 3 + y] = tmp;
         // uiManager.show
         ++cnt;
         if (cnt == 9) { EndGame(0); }
@@ -72,13 +72,13 @@ public class GameManager : MonoBehaviour
     /// <returns>玩家代号</returns>
     private int CheckWin(in int x, in int y)
     {
-        int currMark = records[x, y];
+        int currMark = chessRecord[x * 3 + y];
         bool isWin = true;
 
         // 判断横向
-        for (int i = 1; i <= 2; i++)
+        for (int i = 1; i < 3; ++i)
         {
-            if (records[x, (y + i) % 3] != currMark)
+            if (chessRecord[x * 3 + ((y + i) % 3)] != currMark)
             {
                 isWin = false;
                 break;
@@ -91,9 +91,9 @@ public class GameManager : MonoBehaviour
 
         // 判断纵向
         isWin = true;
-        for (int i = 1; i <= 2; i++)
+        for (int i = 1; i < 3; ++i)
         {
-            if (records[(x + i) % 3, y] != currMark)
+            if (chessRecord[((x + i) % 3) * 3 + y] != currMark)
             {
                 isWin = false;
                 break;
@@ -112,9 +112,9 @@ public class GameManager : MonoBehaviour
             if (abs == 0)
             {
                 isWin = true;
-                for (int i = 1; i <= 2; i++)
+                for (int i = 1; i < 3; i++)
                 {
-                    if (records[(x + i) % 3, (y + i) % 3] != currMark)
+                    if (chessRecord[((x + i) % 3) * 3 + (y + i) % 3] != currMark)
                     {
                         isWin = false;
                         break;
@@ -134,13 +134,13 @@ public class GameManager : MonoBehaviour
                 switch (x)
                 {
                     case 0:
-                        if (records[1, 1] != currMark || records[2, 0] != currMark) isWin = false;
+                        if (chessRecord[4] != currMark || chessRecord[6] != currMark) isWin = false;
                         break;
                     case 1:
-                        if (records[0, 2] != currMark || records[2, 0] != currMark) isWin = false;
+                        if (chessRecord[2] != currMark || chessRecord[6] != currMark) isWin = false;
                         break;
                     case 2:
-                        if (records[0, 2] != currMark || records[1, 1] != currMark) isWin = false;
+                        if (chessRecord[2] != currMark || chessRecord[4] != currMark) isWin = false;
                         break;
                 }
                 if (isWin)
@@ -179,12 +179,12 @@ public class GameManager : MonoBehaviour
 
     private void TryPlay(int x, int y)
     {
-        records[x, y] = currPlayer;
+        chessRecord[x * 3 + y] = currPlayer;
         currPlayer = currPlayer == player1 ? player2 : player1;
     }
     private void UndoTryPlay(int x, int y)
     {
-        records[x, y] = 0;
+        chessRecord[x * 3 + y] = 0;
         currPlayer = currPlayer == player1 ? player2 : player1;
     }
     int bestX, bestY;
@@ -211,7 +211,7 @@ public class GameManager : MonoBehaviour
         {
             for (int j = 0; j < 3; j++)
             {
-                if (records[i, j] != 0) continue;
+                if (chessRecord[i * 3 + j] != 0) continue;
 
                 if (currPlayer == player2)
                 {
@@ -258,7 +258,7 @@ public class GameManager : MonoBehaviour
                         }
                     }
                 }
-                records[i, j] = 0; // 复原棋盘
+                chessRecord[i * 3 + j] = 0; // 复原棋盘
             }
         }
         return bestValue;
@@ -268,7 +268,7 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("AI move");
         _ = MinMaxSearch(cnt);
-        records[bestX, bestY] = player2;    // well it's guaranteed to be the AI playing this step, unlike previous method
+        chessRecord[bestX * 3 + bestY] = player2;    // well it's guaranteed to be the AI playing this step, unlike previous method
         TurnChange(player1);
         ++cnt;
 
@@ -296,11 +296,11 @@ public class GameManager : MonoBehaviour
         currPlayer = firstHand; // 当前玩家为先手
         end = false;
         Debug.Log(currPlayer + " is playing.");
-        for (int x = 0; x < 3; x++)
+        for (int x = 0; x < 3; ++x)
         {
-            for (int y = 0; y < 3; y++)
+            for (int y = 0; y < 3; ++y)
             {
-                records[x, y] = 0;
+                chessRecord[x * 3 + y] = 0;
             }
         }
         cnt = 0;
