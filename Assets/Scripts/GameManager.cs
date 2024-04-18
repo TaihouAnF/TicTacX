@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     private int cnt;                                    // 棋盘棋子数量统计
 
     // 玩家设置
-    private int firstHand;                              // 先手
+    [SerializeField]private int firstHand;                              // 先手
     public bool vsAI = false;                           // Flag 标记 当前模式
     private bool end = false;                           // 游戏结束flag
 
@@ -46,30 +46,14 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         if (end) return;
-        if (vsAI && currPlayer == player2)
-        {
-            AIMove();
-        }
-    }
-
-    void TurnChange(int curr)
-    {
-        currPlayer = curr;
-        if (currPlayer == player1)
-        {
-            Debug.Log("Player1\n");
-        }
-        else
-        {
-            Debug.Log("Player2\n");
-        }
+        if (vsAI && currPlayer == player2) { AIMove(); }
     }
 
     private void OnPlay(int x, int y)
     {
         if ((vsAI && currPlayer != player1) || records[x, y] != 0 || end) return;
         Debug.Log("now, " + currPlayer +  " is playing\n");
-        int tmp = currPlayer;
+        int tmp = currPlayer;   // Use for the purpose of two players
         TurnChange(-currPlayer);
         records[x, y] = tmp;
         // uiManager.show
@@ -77,7 +61,6 @@ public class GameManager : MonoBehaviour
         if (cnt == 9) { EndGame(0); }
         else if (CheckWin(x, y) == player1) { EndGame(player1); }
         else if (CheckWin(x, y) == player2) { EndGame(player2); }
-
     }
 
     /// <summary>
@@ -180,19 +163,20 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log("Player1 wins");
         }
-        else if (vsAI && player == -1)
+        else if (!vsAI && player == -1)
         {
-            Debug.Log("computer wins");
+            Debug.Log("player2 wins");
         }
         else
         {
-            Debug.Log("player2 wins");
+            Debug.Log("computer wins");
         }
         // Uimanager.showreset()
         return;
     }
 
     #region AI logics
+
     private void TryPlay(int x, int y)
     {
         records[x, y] = currPlayer;
@@ -283,7 +267,7 @@ public class GameManager : MonoBehaviour
     private void AIMove()
     {
         Debug.Log("AI move");
-        MinMaxSearch(cnt);
+        _ = MinMaxSearch(cnt);
         records[bestX, bestY] = player2;    // well it's guaranteed to be the AI playing this step, unlike previous method
         TurnChange(player1);
         ++cnt;
@@ -292,5 +276,38 @@ public class GameManager : MonoBehaviour
         if (cnt == 9) { EndGame(0); }
         else if (CheckWin(bestX, bestY) == player2) { EndGame(player2); }
     }
+
+    #endregion
+
+    #region Uitl
+
+    void TurnChange(int curr)
+    {
+        currPlayer = curr;
+        // Debug purpose
+        if (currPlayer == player1) Debug.Log("Player1");
+        else if (currPlayer == player2 && !vsAI) Debug.Log("player2");
+        else Debug.Log("Computer's Turn");
+    }
+
+    public void OnReset()
+    {
+        firstHand = -firstHand; // 反转先手，先手在一开始设置的时候是不变的
+        currPlayer = firstHand; // 当前玩家为先手
+        end = false;
+        Debug.Log(currPlayer + " is playing.");
+        for (int x = 0; x < 3; x++)
+        {
+            for (int y = 0; y < 3; y++)
+            {
+                records[x, y] = 0;
+            }
+        }
+        cnt = 0;
+        
+        // UIManager
+
+    }
+
     #endregion
 }
