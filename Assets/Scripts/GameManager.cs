@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
     [Header("Reference")]
-    [SerializeField] private Transform buttonsContainer;
+    [SerializeField] private List<Button> buttonsContainer;
     [SerializeField] private UIManager uiManager;
     [SerializeField] private int currPlayer;            // 当前玩家
 
@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     private int cnt;                                    // 棋盘棋子数量统计
 
     // 玩家设置
-    [SerializeField]private int firstHand;                              // 先手
+    [SerializeField]private int firstHand;              // 先手
     public bool vsAI = false;                           // Flag 标记 当前模式
     private bool end = false;                           // 游戏结束flag
 
@@ -32,12 +32,12 @@ public class GameManager : MonoBehaviour
     {
         firstHand = player1;                            // 玩家1先手
         TurnChange(firstHand);                          
-        var buttons = buttonsContainer.GetComponentsInChildren<Button>();
-        for (int i = 0; i < buttons.Length; ++i)        // 初始按钮
+        //var buttons = buttonsContainer.GetComponentsInChildren<Button>();
+        for (int i = 0; i < buttonsContainer.Count; ++i)        // 初始按钮
         {                                       
             int x = i / 3, y = i % 3;
-            buttons[i].onClick.AddListener(() => OnPlay(x, y));
-            RectTransform rectTransform = buttons[i].GetComponent<RectTransform>();
+            buttonsContainer[i].onClick.AddListener(() => OnPlay(x, y));
+            RectTransform rectTransform = buttonsContainer[i].GetComponent<RectTransform>();
             buttonPos[x, y] = new Vector2(rectTransform.anchoredPosition.x, rectTransform.anchoredPosition.y);
         }
     }
