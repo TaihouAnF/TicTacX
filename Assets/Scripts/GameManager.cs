@@ -75,8 +75,8 @@ public class GameManager : MonoBehaviour
         chessRecord[x * 3 + y] = currPlayer;
         uiManager.DisplayChess(currPlayer, buttonPos[x, y]);
         ++cnt;
-        if (cnt == 9) { EndGame(0); }
-        else if (CheckWin(x, y) == currPlayer) { EndGame(currPlayer); }
+        if (CheckWin(x, y) == currPlayer) { EndGame(currPlayer); }
+        else if (cnt == 9) { EndGame(0); }
         TurnChange(-currPlayer);
     }
 
@@ -300,8 +300,8 @@ public class GameManager : MonoBehaviour
         chessRecord[bestX * 3 + bestY] = player2;    // well it's guaranteed to be the AI playing this step, unlike previous method
         uiManager.DisplayChess(player2, buttonPos[bestX, bestY]);
         ++cnt;
-        if (cnt == 9) { EndGame(0); }
-        else if (CheckWin(bestX, bestY) == player2) { EndGame(player2); }
+        if (CheckWin(bestX, bestY) == player2) { EndGame(player2); }
+        else if (cnt == 9) { EndGame(0); }
         TurnChange(player1);
     }
 
