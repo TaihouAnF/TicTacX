@@ -10,9 +10,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private UIManager uiManager;
     [SerializeField] private int currPlayer;            // 当前玩家
 
-    [Header("Atrributes")]
-    [SerializeField] private const int player1 = 1;
-    [SerializeField] private const int player2 = -1;    // 若vsAI为true，则为电脑
+    private const int player1 = 1;
+    private const int player2 = -1;                     // 若vsAI为true，则为电脑
 
     // 棋盘
     private Vector2[,] buttonPos = new Vector2[3, 3];   // 棋子位置
@@ -24,15 +23,21 @@ public class GameManager : MonoBehaviour
     private bool vsAI = false;                          // Flag 标记 当前模式
     private bool start = false;                         // 游戏开始flag
     private bool end = false;                           // 游戏结束flag
-
-
     private readonly float cooldown = 1.0f;
     private float curr_cd;
+
+    private int player1Score;
+    private int player2Score;
+    private int drawScore;
 
 
     // Start is called before the first frame update
     void Start()
     {
+        player1Score = 0;
+        player2Score = 0;
+        drawScore = 0;
+        for (int i = -1; i <= 1; ++i) uiManager.DisplayPlayerScore(i, 0);   // 初始都为0
         firstHand = player1;                                    // 玩家1先手                 
         curr_cd = cooldown;                                     // 初始化AI冷却时间
         for (int i = 0; i < buttonsContainer.Count; ++i)        // 初始化按钮
@@ -169,21 +174,29 @@ public class GameManager : MonoBehaviour
         end = true;
         if (player == 0)
         {
+            ++drawScore;
+            uiManager.DisplayPlayerScore(player, drawScore);
             uiManager.DisplayRoundText(0);
             Debug.Log("Draw!");
         }
         else if (player == 1)
         {
+            ++player1Score;
+            uiManager.DisplayPlayerScore(player, player1Score);
             uiManager.DisplayRoundText(player + 1);
             Debug.Log("Player 1 wins");
         }
         else if (!vsAI && player == -1)
         {
+            ++player2Score;
+            uiManager.DisplayPlayerScore(player, player2Score);
             uiManager.DisplayRoundText(player - 1);
             Debug.Log("Player 2 wins");
         }
         else
         {
+            ++player2Score;
+            uiManager.DisplayPlayerScore(player, player2Score);
             uiManager.DisplayRoundText(3);
             Debug.Log("Computer wins");
         }

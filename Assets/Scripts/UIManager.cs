@@ -11,16 +11,34 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Transform chessContainer;
     [SerializeField] private Text roundText;
     [SerializeField] private Text aiStatusText;
+    [SerializeField] private Text player1ScoreText;
+    [SerializeField] private Text player2ScoreText;
+    [SerializeField] private Text drawScoreText;
     public GameObject resetButton;
     public GameObject startButton;
     private List<GameObject> chesses = new(9);
-    
+
     // Start is called before the first frame update
     void Start()
     {
         StartButtonDisplay(true);
         ResetButtonDisplay(false);
         DisplayAIStatus(false);
+    }
+
+    public void DisplayPlayerScore(int player, int score)
+    {
+        switch (player)
+        {
+            case 0:
+                drawScoreText.text = "平局: " + score; break;
+            case 1:
+                player1ScoreText.text = "P1分数: " + score; break;
+            case -1:
+                player2ScoreText.text = "P2分数: " + score; break;
+            default:
+                break;
+        }
     }
 
     public void DisplayChess(int player, Vector2 pos)
