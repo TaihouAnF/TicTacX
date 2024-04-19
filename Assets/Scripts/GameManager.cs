@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UI;
+using static Unity.Burst.Intrinsics.X86.Avx;
 
 public class GameManager : MonoBehaviour
 {
@@ -18,7 +19,7 @@ public class GameManager : MonoBehaviour
 
     // 棋盘
     private Vector2[,] buttonPos = new Vector2[3, 3];   // 棋子位置
-    private int[] chessRecord = new int[9];                 // 记录，空位为0，1和-1对应不同玩家, i = x * 3 + y
+    private int[] chessRecord = new int[9];             // 记录，空位为0，1和-1对应不同玩家, i = x * 3 + y
     private int cnt;                                    // 棋盘棋子数量统计
 
     // 玩家设置
@@ -30,10 +31,9 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        firstHand = player1;                            // 玩家1先手
+        firstHand = player1;                                    // 玩家1先手
         TurnChange(firstHand);                          
-        //var buttons = buttonsContainer.GetComponentsInChildren<Button>();
-        for (int i = 0; i < buttonsContainer.Count; ++i)        // 初始按钮
+        for (int i = 0; i < buttonsContainer.Count; ++i)        // 初始化按钮
         {                                       
             int x = i / 3, y = i % 3;
             buttonsContainer[i].onClick.AddListener(() => OnPlay(x, y));
@@ -52,15 +52,15 @@ public class GameManager : MonoBehaviour
     private void OnPlay(int x, int y)
     {
         if ((vsAI && currPlayer != player1) || chessRecord[x * 3 + y] != 0 || end) return;
-        Debug.Log("now, " + currPlayer +  " is playing\n");
+        Debug.Log("now, player " + currPlayer +  " is playing\n");
         int tmp = currPlayer;   // Use for the purpose of two players
-        TurnChange(-currPlayer);
         chessRecord[x * 3 + y] = tmp;
-        // uiManager.show
+        uiManager.DisplayChess(tmp, buttonPos[x, y]);
         ++cnt;
         if (cnt == 9) { EndGame(0); }
         else if (CheckWin(x, y) == player1) { EndGame(player1); }
         else if (CheckWin(x, y) == player2) { EndGame(player2); }
+        TurnChange(-currPlayer);
     }
 
     /// <summary>
@@ -157,21 +157,25 @@ public class GameManager : MonoBehaviour
         end = true;
         if (player == 0)
         {
-            Debug.Log("draw");
+            uiManager.DisplayRoundText(0);
+            Debug.Log("Draw!");
         }
         else if (player == 1)
         {
-            Debug.Log("Player1 wins");
+            uiManager.DisplayRoundText(player + 1);
+            Debug.Log("Player 1 wins");
         }
         else if (!vsAI && player == -1)
         {
-            Debug.Log("player2 wins");
+            uiManager.DisplayRoundText(player - 1);
+            Debug.Log("Player 2 wins");
         }
         else
         {
-            Debug.Log("computer wins");
+            uiManager.DisplayRoundText(3);
+            Debug.Log("Computer wins");
         }
-        // Uimanager.showreset()
+        uiManager.EnableReset();
         return;
     }
 
@@ -269,12 +273,11 @@ public class GameManager : MonoBehaviour
         Debug.Log("AI move");
         _ = MinMaxSearch(cnt);
         chessRecord[bestX * 3 + bestY] = player2;    // well it's guaranteed to be the AI playing this step, unlike previous method
-        TurnChange(player1);
+        uiManager.DisplayChess(player2, buttonPos[bestX, bestY]);
         ++cnt;
-
-        // uiManager
         if (cnt == 9) { EndGame(0); }
         else if (CheckWin(bestX, bestY) == player2) { EndGame(player2); }
+        TurnChange(player1);
     }
 
     #endregion
@@ -283,11 +286,15 @@ public class GameManager : MonoBehaviour
 
     void TurnChange(int curr)
     {
+        if (end) return;
+
         currPlayer = curr;
         // Debug purpose
-        if (currPlayer == player1) Debug.Log("Player1");
-        else if (currPlayer == player2 && !vsAI) Debug.Log("player2");
+        if (currPlayer == player1) Debug.Log("Player1's Turn");
+        else if (currPlayer == player2 && !vsAI) Debug.Log("Player2's Turn");
         else Debug.Log("Computer's Turn");
+
+        uiManager.DisplayRoundText(currPlayer);
     }
 
     public void OnReset()
@@ -295,7 +302,7 @@ public class GameManager : MonoBehaviour
         firstHand = -firstHand; // 反转先手，先手在一开始设置的时候是不变的
         currPlayer = firstHand; // 当前玩家为先手
         end = false;
-        Debug.Log(currPlayer + " is playing.");
+        Debug.Log("now, player " + currPlayer + " is playing.");
         for (int x = 0; x < 3; ++x)
         {
             for (int y = 0; y < 3; ++y)
@@ -304,9 +311,8 @@ public class GameManager : MonoBehaviour
             }
         }
         cnt = 0;
-        
-        // UIManager
-
+        uiManager.ResetGame();
+        uiManager.DisplayRoundText(currPlayer);
     }
 
     #endregion
