@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour
 
     // 玩家设置
     private int firstHand;                              // 先手
-    private bool vsAI = false;                           // Flag 标记 当前模式
+    private bool vsAI = false;                          // Flag 标记 当前模式
     private bool end = false;                           // 游戏结束flag
 
 
@@ -276,6 +276,12 @@ public class GameManager : MonoBehaviour
         if (cnt == 9) { EndGame(0); }
         else if (CheckWin(bestX, bestY) == player2) { EndGame(player2); }
         TurnChange(player1);
+    }
+
+    public void OnAIStateChange()
+    {
+        vsAI = !vsAI;
+        uiManager.DisplayAIStatus(vsAI);
     }
 
     #endregion

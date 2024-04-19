@@ -10,12 +10,15 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject crossChess;
     [SerializeField] private Transform chessContainer;
     [SerializeField] private Text roundText;
-    private List<GameObject> chesses = new(9);
+    [SerializeField] private Text aiStatusText;
     public GameObject resetButton;
+    private List<GameObject> chesses = new(9);
+    
     // Start is called before the first frame update
     void Start()
     {
         ResetButtonDisplay(false);
+        DisplayAIStatus(false);
     }
 
     public void DisplayChess(int player, Vector2 pos)
@@ -50,6 +53,12 @@ public class UIManager : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    public void DisplayAIStatus(bool on)
+    {
+        string tmp = on ? "ON" : "OFF";
+        aiStatusText.text = "AI״̬: " + tmp;
     }
 
     public void ResetGame()
