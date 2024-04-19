@@ -1,10 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UI;
-using static Unity.Burst.Intrinsics.X86.Avx;
 
 public class GameManager : MonoBehaviour
 {
@@ -25,7 +22,10 @@ public class GameManager : MonoBehaviour
     // 玩家设置
     private int firstHand;                              // 先手
     private bool vsAI = false;                          // Flag 标记 当前模式
+    private bool start = false;                         // 游戏开始flag
     private bool end = false;                           // 游戏结束flag
+
+
     private readonly float cooldown = 1.0f;
     private float curr_cd;
 
@@ -33,9 +33,8 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        firstHand = player1;                                    // 玩家1先手
-        TurnChange(firstHand);                          
-        curr_cd = cooldown;
+        firstHand = player1;                                    // 玩家1先手                 
+        curr_cd = cooldown;                                     // 初始化AI冷却时间
         for (int i = 0; i < buttonsContainer.Count; ++i)        // 初始化按钮
         {                                       
             int x = i / 3, y = i % 3;
@@ -49,6 +48,7 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         if (end) return;
+        if (!start) return;
         if (vsAI && currPlayer == player2) 
         {
             if (curr_cd <= 0.0f)
@@ -60,13 +60,12 @@ public class GameManager : MonoBehaviour
             {
                 curr_cd -= Time.deltaTime;
             }
-            
         }
     }
 
     private void OnPlay(int x, int y)
     {
-        if ((vsAI && currPlayer != player1) || chessRecord[x * 3 + y] != 0 || end) return;
+        if ((vsAI && currPlayer != player1) || chessRecord[x * 3 + y] != 0 || end || !start) return;
         Debug.Log("now, player " + currPlayer +  " is playing\n");
         chessRecord[x * 3 + y] = currPlayer;
         uiManager.DisplayChess(currPlayer, buttonPos[x, y]);
@@ -332,6 +331,13 @@ public class GameManager : MonoBehaviour
         cnt = 0;
         uiManager.ResetGame();
         uiManager.DisplayRoundText(currPlayer);
+    }
+
+    public void OnGameStart()
+    {
+        TurnChange(firstHand);
+        start = true;
+        uiManager.StartGame();
     }
 
     #endregion

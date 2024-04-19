@@ -12,11 +12,13 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text roundText;
     [SerializeField] private Text aiStatusText;
     public GameObject resetButton;
+    public GameObject startButton;
     private List<GameObject> chesses = new(9);
     
     // Start is called before the first frame update
     void Start()
     {
+        StartButtonDisplay(true);
         ResetButtonDisplay(false);
         DisplayAIStatus(false);
     }
@@ -61,6 +63,11 @@ public class UIManager : MonoBehaviour
         aiStatusText.text = "AI״̬: " + tmp;
     }
 
+    public void StartGame()
+    {
+        StartButtonDisplay(false);
+    }
+
     public void ResetGame()
     {
         foreach(GameObject chess in chesses)
@@ -74,6 +81,11 @@ public class UIManager : MonoBehaviour
     public void EnableReset()
     {
         ResetButtonDisplay(true);
+    }
+
+    void StartButtonDisplay(bool on)
+    {
+        startButton.SetActive(on);
     }
 
     void ResetButtonDisplay(bool on)
