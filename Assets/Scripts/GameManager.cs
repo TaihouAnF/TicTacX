@@ -26,6 +26,8 @@ public class GameManager : MonoBehaviour
     private int firstHand;                              // 先手
     private bool vsAI = false;                          // Flag 标记 当前模式
     private bool end = false;                           // 游戏结束flag
+    private readonly float cooldown = 1.0f;
+    private float curr_cd;
 
 
     // Start is called before the first frame update
@@ -33,6 +35,7 @@ public class GameManager : MonoBehaviour
     {
         firstHand = player1;                                    // 玩家1先手
         TurnChange(firstHand);                          
+        curr_cd = cooldown;
         for (int i = 0; i < buttonsContainer.Count; ++i)        // 初始化按钮
         {                                       
             int x = i / 3, y = i % 3;
@@ -46,7 +49,19 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         if (end) return;
-        if (vsAI && currPlayer == player2) { AIMove(); }
+        if (vsAI && currPlayer == player2) 
+        {
+            if (curr_cd <= 0.0f)
+            {
+                AIMove();
+                curr_cd = cooldown;
+            }
+            else
+            {
+                curr_cd -= Time.deltaTime;
+            }
+            
+        }
     }
 
     private void OnPlay(int x, int y)
