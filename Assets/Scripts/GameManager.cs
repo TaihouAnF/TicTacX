@@ -353,5 +353,13 @@ public class GameManager : MonoBehaviour
         uiManager.StartGame();
     }
 
-    #endregion
+    public void OnExitGame()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
+#endregion
 }
