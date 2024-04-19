@@ -353,7 +353,15 @@ public class GameManager : MonoBehaviour
         uiManager.StartGame();
     }
 
-    public void OnExitGame()
+    public void OnResetScore()
+    {
+        player1Score = player2Score = drawScore = 0;
+        uiManager.DisplayPlayerScore(player1, player1Score);
+        uiManager.DisplayPlayerScore(player2, player2Score);
+        uiManager.DisplayPlayerScore(0, drawScore);
+    }
+
+    public void OnGameExit()
     {
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;

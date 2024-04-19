@@ -632,7 +632,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6207755275380134057, guid: 79b56d444e21e854890cb32f17b58405, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: 
+      value: OnResetScore
       objectReference: {fileID: 0}
     - target: {fileID: 6848248381478798850, guid: 79b56d444e21e854890cb32f17b58405, type: 3}
       propertyPath: m_Text
@@ -2829,6 +2829,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 928800198}
+    - target: {fileID: 321796786170360116, guid: b5e2c90aa7f87b347a0190512aea8241, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnGameExit
+      objectReference: {fileID: 0}
     - target: {fileID: 2763467998090376097, guid: b5e2c90aa7f87b347a0190512aea8241, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
