@@ -23,8 +23,8 @@ public class GameManager : MonoBehaviour
     private int cnt;                                    // 棋盘棋子数量统计
 
     // 玩家设置
-    [SerializeField]private int firstHand;              // 先手
-    public bool vsAI = false;                           // Flag 标记 当前模式
+    private int firstHand;                              // 先手
+    private bool vsAI = false;                           // Flag 标记 当前模式
     private bool end = false;                           // 游戏结束flag
 
 
@@ -53,13 +53,11 @@ public class GameManager : MonoBehaviour
     {
         if ((vsAI && currPlayer != player1) || chessRecord[x * 3 + y] != 0 || end) return;
         Debug.Log("now, player " + currPlayer +  " is playing\n");
-        int tmp = currPlayer;   // Use for the purpose of two players
-        chessRecord[x * 3 + y] = tmp;
-        uiManager.DisplayChess(tmp, buttonPos[x, y]);
+        chessRecord[x * 3 + y] = currPlayer;
+        uiManager.DisplayChess(currPlayer, buttonPos[x, y]);
         ++cnt;
         if (cnt == 9) { EndGame(0); }
-        else if (CheckWin(x, y) == player1) { EndGame(player1); }
-        else if (CheckWin(x, y) == player2) { EndGame(player2); }
+        else if (CheckWin(x, y) == currPlayer) { EndGame(currPlayer); }
         TurnChange(-currPlayer);
     }
 
