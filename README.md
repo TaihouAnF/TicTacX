@@ -24,5 +24,5 @@ P.S. **分辨率目前仅为800*600**
 或下载repo中的zip文件解压并运行
 
 # Reference / 参考
-- [@linnndenz](https://github.com/linnndenz/TicTacToe) for MinMax Algorithm and Auxiliary Logics
-- [@StarashZero](https://starashzero.github.io/3DGameDesign/hw2/game) for Basic Framework of TicTacToe
+- [@linnndenz](https://github.com/linnndenz/TicTacToe) for MinMax Algorithm and Auxiliary Logics.
+- [@StarashZero](https://starashzero.github.io/3DGameDesign/hw2/game) for Overall Framework and Design.
